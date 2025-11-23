@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeaTha Search Results</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body {
+            font-family: "Tahoma", "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg,#dff1ff 0%,#eff9ff 60%);
+            color: #012a6b;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .header {
+            background: rgba(255,255,255,0.24);
+            backdrop-filter: blur(6px) saturate(120%);
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #012a6b;
+            text-decoration: none;
+            font-family: "Tahoma", "Segoe UI", sans-serif;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.28);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .logo:hover { transform: translateY(-1px); }
+        
+        .search-header { flex:1; max-width:460px; }
+        
+        .search-box {
+            width: 100%;
+            height: 32px;
+            font-size: 14px;
+            padding: 6px 10px;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255,255,255,0.92);
+            color: #012a6b;
+            font-family: "Tahoma", "Segoe UI", sans-serif;
+        }
+        
+        .search-box:focus {
+            border-top: 2px solid #000080;
+            border-left: 2px solid #000080;
+        }
+        
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255,255,255,0.92);
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .stats { color: #6b7a8a; font-size: 12px; margin-bottom:18px; padding:6px; background: rgba(245,245,245,0.7); border-radius:6px; }
+        
+        .result { margin-bottom: 18px; padding: 12px; background: rgba(250,250,250,0.85); border-radius:6px; }
+        
+        .result-url { color: #0a6b3a; font-size: 12px; margin-bottom:6px; display:flex; align-items:center; gap:8px; font-weight:700; }
+        
+        .favicon {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .result-title { font-size: 15px; margin-bottom:6px; font-weight:700; }
+        
+        .result-title a { color: #0b57d0; text-decoration: underline; }
+        
+        .result-title a:hover { color: #d32f2f; }
+        
+        .result-title a:visited {
+            color: #800080;
+        }
+        
+        .result-snippet {
+            color: #000000;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        
+        .result-snippet strong {
+            background-color: #ffff00;
+            font-weight: bold;
+        }
+        
+        .no-results { text-align:center; margin-top:40px; padding:22px; background: rgba(245,245,245,0.9); border-radius:8px; }
+        
+        .no-results h2 {
+            color: #000080;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .no-results p {
+            color: #000000;
+            font-size: 12px;
+        }
+        
+        .search-button {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(220,235,255,0.9) 100%);
+            border: 1px solid rgba(255,255,255,0.75);
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            color: #012a6b;
+            font-family: "Tahoma", "Segoe UI", sans-serif;
+            border-radius:6px;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+        }
+
+        .toolbar-left, .toolbar-right { display:flex; gap:8px; align-items:center; }
+
+        .icon-btn { display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; cursor:pointer; background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(230,240,255,0.9) 100%); border:1px solid rgba(255,255,255,0.8); box-shadow:0 2px 6px rgba(0,0,0,0.06); font-size:16px; }
+
+        .icon-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 6px rgba(0,0,0,0.04); }
+        
+        .search-button:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+        
+        .search-button:active { transform: translateY(0); box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+        
+        /* Top title bar */
+        .topbar {
+            width: 100%;
+            padding: 10px 18px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background: linear-gradient(180deg, rgba(220,235,255,0.35), rgba(255,255,255,0.12));
+            border-bottom: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+            position: sticky; top: 0; z-index: 30;
+            backdrop-filter: blur(6px) saturate(120%);
+        }
+
+        .topbar h1 { margin:0; font-size:20px; color:#012a6b; font-weight:700; letter-spacing:0.6px; }
+
+        /* Fixed back button on the left middle */
+        .back-fixed {
+            position: fixed; left: 12px; top: 50%; transform: translateY(-50%);
+            z-index: 40;
+        }
+
+        /* Apps grid at bottom */
+        .apps-grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            padding: 10px 6px 22px 6px;
+        }
+
+        .app-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(6px);
+            border-radius: 10px;
+            padding: 10px;
+            text-align:center;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+
+        .app-card a { text-decoration:none; color:#012a6b; font-weight:700; display:block; margin-top:8px; }
+    </style>
+</head>
+<body>
+    <div class="topbar"><h1>NeaTha apps</h1></div>
+
+    <div class="back-fixed"><div class="icon-btn" onclick="history.back()" title="Back">◀</div></div>
+
+    <div class="header">
+        <a href="nesa95.html" class="logo">NeaTha</a>
+        
+        <div class="toolbar-left">
+            <div class="icon-btn" title="Settings" onclick="openSettings()">⚙️</div>
+            <div class="icon-btn" title="NeaTha apps" onclick="openApps()">🪟</div>
+        </div>
+        <div class="search-header">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search NeaTha...">
+        </div>
+        <div class="toolbar-right">
+            <div class="icon-btn" title="Search" onclick="performSearch()">🔍</div>
+            <div class="icon-btn" title="Clear" onclick="clearSearch()">❌</div>
+            <button class="search-button" onclick="showAllWebsites()">Show All Websites</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="stats" id="stats"></div>
+        <div id="results"></div>
+
+        <h3 style="margin-top:18px;color:#012a6b;">Apps</h3>
+        <div class="apps-grid">
+            <div class="app-card"><div>🏠</div><a href="apps/neatha.html">NeaTha</a><div class="muted">Home & hub</div></div>
+            <div class="app-card"><div>🎮</div><a href="apps/polyblocks.html">Polyblocks</a><div class="muted">3D block game</div></div>
+            <div class="app-card"><div>🛒</div><a href="apps/eshop.html">eShop</a><div class="muted">Buy & sell (like eBay)</div></div>
+            <div class="app-card"><div>🕶️</div><a href="apps/vr_o360.html">VR o360</a><div class="muted">(not released)</div></div>
+            <div class="app-card"><div>📺</div><a href="apps/videoss.html">Videoss</a><div class="muted">Video sharing</div></div>
+        </div>
+    </div>
+
+    <script src="website_database.js"></script>
+    <script>
+        // Get search query from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q') || '';
+        
+        // Set search box value
+        document.getElementById('searchInput').value = query;
+        
+        // Use the database from external file (fallback included)
+        const sampleResults = typeof websiteDatabase !== 'undefined' ? websiteDatabase : [
+            {title: "Polyblocks - Official Game", url: "https://polyblocks.onrender.com", snippet: "Polyblocks is a 3D block-building game."},
+            {title: "NeaTha Explorer", url: "https://polyblocks.onrender.com/explorer", snippet: "NeaTha Explorer web browser."},
+            {title: "YouTube", url: "https://www.youtube.com", snippet: "Videos, music and live streams."},
+            {title: "Google", url: "https://www.google.com", snippet: "Search the world's information."},
+            {title: "Wikipedia", url: "https://www.wikipedia.org", snippet: "Free online encyclopedia."},
+            {title: "GitHub", url: "https://github.com", snippet: "Where the world builds software."},
+            {title: "Stack Overflow", url: "https://stackoverflow.com", snippet: "Developer community."},
+            {title: "Reddit", url: "https://www.reddit.com", snippet: "Dive into anything."},
+            {title: "Twitter", url: "https://twitter.com", snippet: "Social media platform."},
+            {title: "Discord", url: "https://discord.com", snippet: "Chat for communities."}
+        ];
+        
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            const statsDiv = document.getElementById('stats');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '<div class="no-results"><h2>No search query</h2><p>Please enter a search term.</p></div>';
+                return;
+            }
+            
+            // Filter results based on query
+            const filteredResults = sampleResults.filter(result => 
+                result.title.toLowerCase().includes(query.toLowerCase()) ||
+                result.snippet.toLowerCase().includes(query.toLowerCase()) ||
+                result.url.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            if (filteredResults.length === 0) {
+                resultsDiv.innerHTML = `<div class="no-results"><h2>No results found for "${query}"</h2><p>Try different keywords or check your spelling.</p><button onclick="searchWebPrivately()" style="margin-top: 15px; padding: 8px 16px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; cursor: pointer; font-family: 'Tahoma', 'MS Sans Serif', sans-serif; font-size: 11px;">🔒 Search Web Privately</button></div>`;
+                statsDiv.innerHTML = '';
+                return;
+            }
+            
+            // Display stats
+            statsDiv.innerHTML = `About ${filteredResults.length} results (0.${Math.floor(Math.random() * 99) + 10} seconds) &nbsp; <button onclick="searchWebPrivately()" style="padding: 4px 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; cursor: pointer; font-family: 'Tahoma', 'MS Sans Serif', sans-serif; font-size: 11px;">🔒 Search Web Privately</button>`;
+            
+            // Display results
+            let html = '';
+            filteredResults.forEach(result => {
+                // Highlight query in snippet
+                const highlightedSnippet = result.snippet.replace(
+                    new RegExp(query, 'gi'),
+                    match => `<strong>${match}</strong>`
+                );
+                
+                html += `
+                    <div class="result">
+                        <div class="result-url">
+                            <span class="favicon">🌐</span>
+                            <span>${result.url}</span>
+                        </div>
+                        <div class="result-title">
+                            <a href="${result.url}" target="_blank">${result.title}</a>
+                        </div>
+                        <div class="result-snippet">${highlightedSnippet}</div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+        
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm) {
+                window.location.href = `search.html?q=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            window.location.href = 'search.html';
+        }
+        
+        function searchWebPrivately() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q');
+            if (query) {
+                // Search on DuckDuckGo with privacy mode (kp=1)
+                window.open('https://duckduckgo.com/?q=' + encodeURIComponent(query) + '&kp=1', '_blank');
+            }
+        }
+        
+        function showAllWebsites() {
+            const resultsDiv = document.getElementById('results');
+            const statsDiv = document.getElementById('stats');
+            
+            statsDiv.innerHTML = `Showing all ${sampleResults.length} websites`;
+            
+            let html = '';
+            sampleResults.forEach(result => {
+                html += `
+                    <div class="result">
+                        <div class="result-url">
+                            <span class="favicon">🌐</span>
+                            <span>${result.url}</span>
+                        </div>
+                        <div class="result-title">
+                            <a href="${result.url}" target="_blank">${result.title}</a>
+                        </div>
+                        <div class="result-snippet">${result.snippet}</div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+            document.getElementById('searchInput').value = '';
+        }
+
+        function openSettings() {
+            // Open the settings page in a new window/tab. Could be changed to a modal later.
+            window.open('apps/settings.html', '_blank');
+        }
+
+        function openApps() {
+            // Navigate to the new apps overview page
+            window.location.href = 'apps.html';
+        }
+        
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Display results on load
+        displayResults();
+    </script>
+    
+    <br>No search query provided. Showing all results. Nesa 1995 - 1999</br>
+</body>
+</html>

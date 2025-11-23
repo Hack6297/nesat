@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nesa Tab</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta name="description" content="Latest news and updates from Nesa Tab">
+    <style>
+        body {
+            font-family: "Tahoma", "MS Sans Serif", sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #d4d0c8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .title {
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%);
+            border: 2px outset #ffffff;
+            padding: 20px;
+            width: 600px;
+        }
+        
+        .title h2 {
+            color: #000080;
+            font-size: 42px;
+            text-shadow: 1px 1px 0px #808080;
+            letter-spacing: 2px;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%);
+            border: 2px outset #ffffff;
+            width: 600px;
+        }
+        
+        .search-box {
+            width: 500px;
+            height: 28px;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            outline: none;
+            background-color: #ffffff;
+            color: #000000;
+            font-family: "Tahoma", "MS Sans Serif", sans-serif;
+        }
+        
+        .search-box:focus {
+            border-top: 2px solid #000080;
+            border-left: 2px solid #000080;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-button {
+            background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%);
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #404040;
+            border-bottom: 1px solid #404040;
+            padding: 6px 20px;
+            font-family: "Tahoma", "MS Sans Serif", sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            color: #000000;
+        }
+        
+        .search-button:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #f5f4f2 50%, #e0ddd6 100%);
+        }
+        
+        .search-button:active {
+            background: #d4d0c8;
+            border-top: 1px solid #404040;
+            border-left: 1px solid #404040;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            padding: 7px 19px 5px 21px;
+        }
+        
+        .news-section {
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 2px outset #ffffff;
+            line-height: 1.6;
+            color: #000000;
+        }
+        
+        .news-section h2 {
+            color: #000080;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #000080;
+            padding-bottom: 8px;
+        }
+        
+        .download-button {
+            background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%);
+            border-top: 1px solid #ffffff;
+            border-left: 1px solid #ffffff;
+            border-right: 1px solid #404040;
+            border-bottom: 1px solid #404040;
+            padding: 8px 16px;
+            font-size: 11px;
+            font-family: "Tahoma", "MS Sans Serif", sans-serif;
+            cursor: pointer;
+            margin-top: 15px;
+            color: #000000;
+        }
+        
+        .download-button:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #f5f4f2 50%, #e0ddd6 100%);
+        }
+        
+        .download-button:active {
+            background: #d4d0c8;
+            border-top: 1px solid #404040;
+            border-left: 1px solid #404040;
+            border-right: 1px solid #ffffff;
+            border-bottom: 1px solid #ffffff;
+            padding: 9px 15px 7px 17px;
+        }
+        
+        .news-entry {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px outset #ffffff;
+        }
+        
+        .news-date {
+            color: #008000;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .news-title {
+            color: #000080;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .news-entry ul {
+            margin: 10px 0 10px 20px;
+        }
+    </style>
+    <script>
+        function searchGoogle() {
+            const searchInput = document.querySelector('.search-box');
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm) {
+                // Open NESA search results page
+                window.location.href = 'search_new 98.html?q=' + encodeURIComponent(searchTerm);
+            } else {
+                alert('Please enter something to search!');
+            }
+        }
+        
+        function clearSearch() {
+            document.querySelector('.search-box').value = '';
+        }
+        
+        function downloadGame() {
+            // Create a temporary link element to trigger download
+            const link = document.createElement('a');
+            link.href = 'https://www.dropbox.com/scl/fo/wdc655m4rfhfx2clsyr1u/AGPAXPsuUWK2R-dxB7Es3Tk?rlkey=xkz149pj7814odij94pz9whop&st=4a0428z5&dl=1';
+            link.download = 'Polyblocks-Pre-Test-0.5.zip';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Allow Enter key to search
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.search-box').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchGoogle();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="title">
+        <h2>Nesa! 98</h2>
+    </p>yes, and that is Dzhabrail's Website.<p>
+    </div>
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="Search Nesa 98...">
+        <div class="button-container">
+            <button class="search-button" onclick="searchGoogle()">Find:</button>
+            <button class="search-button" onclick="clearSearch()">Clear:</button>
+        </div>
+    </div>
+    
+    <div class="news-section">
+        <h2>NESA News</h2>
+        
+        <div class="news-entry">
+            <div class="news-date">December 1995 (2025)</div>
+            <div class="news-title">Nesa Explorer Coming Soon! 🌐</div>
+            <p>Nesa Explorer, a web browser for the NESA 1995 platform will be released soon! Experience the web like never before with our revolutionary browser technology.</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">December 1995 (2025)</div>
+            <div class="news-title">NESA 98 Interface Update! 💻</div>
+            <p>We're bringing Windows 98 aesthetics to NESA! Enjoy the classic look with modern functionality. Features authentic Windows 98 styling with gradients, borders, and classic buttons.</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">NESA Search Database Expanded! 📚</div>
+            <p>Over 300 websites now available in NESA Search! Including themed categories like Animals, Olympics, Fruits, Space, Colors, and Cool Games. Search for your favorite topics!</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">NESA Search Engine Released! 🚀</div>
+            <p>Search Engine: NESA 1995 (also known as ASBAN) has been released! This powerful search engine will help you find anything on the NESA platform.</p>
+            <p>We're also working on Nesa Explorer, a web browser for the NESA 1995 platform!</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">Cool Math Games Added! 🎮</div>
+            <p>Now search for all your favorite game websites! Cool Math Games, Miniclip, Kongregate, and more. Play Papa's Games, Run 3, Fireboy and Watergirl, Chess, Snake, and Tetris!</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">Education Tools Available! 📖</div>
+            <p>Teachers can now find Google Classroom, Kahoot!, Quizizz, and other educational platforms through NESA Search. Making remote learning easier for everyone!</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">Wikipedia Integration Complete! 📰</div>
+            <p>All themed searches now link directly to Wikipedia articles! Learn about animals, countries, space, colors, and more with comprehensive encyclopedia entries.</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">Polyblocks Multiplayer Update! 🎯</div>
+            <p>Polyblocks now supports up to 16 players in Battle mode! New weapons, blocks, and maps added. Join the community at polyblocks.onrender.com!</p>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">November 1995 (2025)</div>
+            <div class="news-title">Polyblocks Pre-test 0.5 Released! 🧊</div>
+            <p>Game has a basic gameplay mechanic where players can fight, and build structures using blocks. Game is set in a 3D environment with a blocky aesthetic.</p>
+            <p><strong>Game features a variety of Experiences such as:</strong></p>
+            <ul>
+                <li>Playground 🛝</li>
+                <li>Battle ⚔️</li>
+                <li>Parkour 🧗</li>
+                <li>Anarchy 🔥</li>
+            </ul>
+            <p>and more to come in future updates. (More info coming soon!) 📈</p>
+            <button class="download-button" onclick="downloadGame()">DOWNLOAD 📥</button>
+        </div>
+        
+        <div class="news-entry">
+            <div class="news-date">October 1995 (2025)</div>
+            <div class="news-title">NESA Platform Launch! 🎉</div>
+            <p>Welcome to NESA 95/98! Your gateway to the digital world. Experience the nostalgia of classic computing with modern web capabilities. More exciting products coming soon!</p>
+        </div>
+    </div>
+    
+    <div class="news-section" style="margin-top: 20px;">
+        <h2>Popular Searches</h2>
+        <div class="news-entry">
+            <p><strong>Try searching for:</strong></p>
+            <ul>
+                <li>🎮 Cool Math Games, Tetris, Snake, Minecraft</li>
+                <li>🐾 Dog, Cat, Lion, Elephant, Dolphin, Panda</li>
+                <li>🍎 Apple, Banana, Strawberry, Mango, Watermelon</li>
+                <li>🏅 Olympics, Basketball, Soccer, Swimming, Tennis</li>
+                <li>🚀 Mars, Jupiter, NASA, Space, Galaxy, Black Hole</li>
+                <li>🎨 Red, Blue, Green, Yellow, Purple, Colors</li>
+                <li>🌍 USA, Japan, France, Canada, Australia, Brazil</li>
+                <li>📚 Wikipedia, Google, YouTube, GitHub, Khan Academy</li>
+                <li>👨‍🏫 Google Classroom, Kahoot, Quizizz, Duolingo</li>
+                <li>🧊 Polyblocks, NESA, Explorer, Browser, Games</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="news-section" style="margin-top: 20px;">
+        <h2>🐱 OrangeVale K-8 Bobcat Broadcast</h2>
+        <div class="news-entry">
+            <p><strong>Welcome to OrangeVale K-8 School in Roseville! 🎓</strong></p>
+            <p>Check out our Bobcat Broadcast videos featuring school news, student projects, and community updates!</p>
+            
+            <div style="margin: 20px 0;">
+                <h3 style="color: #000080; font-size: 14px; margin-bottom: 10px;">📺 Bobcat Broadcast Episode 1</h3>
+                <div style="background: #000000; padding: 10px; border: 2px inset #808080;">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/4rkmwk6Bxms" 
+                        title="Bobcat Broadcast Episode 1" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen style="border: 2px outset #ffffff;"></iframe>
+                </div>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3 style="color: #000080; font-size: 14px; margin-bottom: 10px;">📺 Bobcat Broadcast Episode 2</h3>
+                <div style="background: #000000; padding: 10px; border: 2px inset #808080;">
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/2rkMBCuZAzE" 
+                        title="Bobcat Broadcast Episode 2" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen style="border: 2px outset #ffffff;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="news-section" style="margin-top: 20px;">
+        <h2>👩‍🏫 Teacher Organization - Quick Links</h2>
+        <div class="news-entry">
+            <p><strong>Essential Tools for OrangeVale K-8 Teachers & Students:</strong></p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                <a href="https://www.blooket.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">🎮 Blooket</a>
+                <a href="https://kahoot.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">🎯 Kahoot!</a>
+                <a href="https://www.gimkit.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">💰 Gimkit</a>
+                <a href="https://quizizz.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">❓ Quizizz</a>
+                <a href="https://www.khanacademy.org" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">📚 Khan Academy</a>
+                <a href="https://scratch.mit.edu" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">🐱 Scratch</a>
+                <a href="https://www.coolmathgames.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">🧮 Cool Math Games</a>
+                <a href="https://classroom.google.com" target="_blank" style="display: block; padding: 12px; background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 50%, #d4d0c8 100%); border: 2px outset #ffffff; text-decoration: none; color: #000080; font-weight: bold; text-align: center;">📖 Google Classroom</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Keep server awake by pinging every 10 minutes
+        setInterval(() => {
+            fetch('https://polyblocks.onrender.com/ping')
+                .catch(() => {}); // Ignore errors
+        }, 600000); // 10 minutes
+    </script>
+</body>
+</html>
+
