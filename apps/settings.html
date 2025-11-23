@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>NeaTha Settings</title>
+  <link rel="icon" href="../favicon.ico">
+  <style>
+    body{font-family: "Segoe UI", Tahoma, sans-serif; background: linear-gradient(180deg,#f8fbff,#ffffff); color:#012a6b; padding:24px}
+    .panel{max-width:740px;margin:0 auto;background:rgba(255,255,255,0.14);backdrop-filter:blur(6px);border-radius:10px;padding:18px;border:1px solid rgba(255,255,255,0.6)}
+    h1{margin:0 0 8px}
+    .row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+    label{font-weight:700}
+    .toggle{width:40px;height:22px;border-radius:12px;background:#cfd8e3;position:relative;cursor:pointer}
+    .toggle .knob{position:absolute;left:2px;top:2px;width:18px;height:18px;border-radius:50%;background:white;transition:left 0.12s}
+    .toggle.on{background:#5aa0ff}
+    .toggle.on .knob{left:20px}
+    a.btn{display:inline-block;padding:8px 14px;background:linear-gradient(180deg,#fff,#e6f0ff);border-radius:8px;text-decoration:none;color:#012a6b;border:1px solid rgba(255,255,255,0.8)}
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Settings</h1>
+    <p>Configure NeaTha apps and appearance.</p>
+    <div class="row">
+      <label>Enable Aero Glass</label>
+      <div class="toggle" id="aeroToggle" onclick="toggleAero()"><div class="knob"></div></div>
+    </div>
+    <div class="row">
+      <label>Show App Tiles</label>
+      <div class="toggle on" id="appsToggle" onclick="toggleApps()"><div class="knob"></div></div>
+    </div>
+    <div style="margin-top:16px">
+      <a class="btn" href="../search.html">Back to NeaTha Search</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleAero(){
+      const t = document.getElementById('aeroToggle');
+      t.classList.toggle('on');
+      // Preference could be saved to localStorage
+      localStorage.setItem('neatha_aero', t.classList.contains('on') ? '1' : '0');
+      alert('Aero preference saved (local demo).');
+    }
+    function toggleApps(){
+      const t = document.getElementById('appsToggle');
+      t.classList.toggle('on');
+      localStorage.setItem('neatha_show_apps', t.classList.contains('on') ? '1' : '0');
+      alert('Apps visibility preference saved (local demo).');
+    }
+    // Initialize toggles from localStorage
+    (function(){
+      const aero = localStorage.getItem('neatha_aero');
+      if(aero==='1') document.getElementById('aeroToggle').classList.add('on');
+      const apps = localStorage.getItem('neatha_show_apps');
+      if(apps==='0') document.getElementById('appsToggle').classList.remove('on');
+    })();
+  </script>
+</body>
+</html>

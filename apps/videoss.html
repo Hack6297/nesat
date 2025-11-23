@@ -1,0 +1,209 @@
+<!doctype html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Videoss</title>
+  <link rel="icon" href="../favicon.ico">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    :root{--bg1:#f8fbff;--accent:#012a6b}
+    body{font-family:"Segoe UI", Tahoma, sans-serif;background:linear-gradient(180deg,var(--bg1),#ffffff);color:var(--accent);padding:20px;margin:0}
+    .panel{max-width:1100px;margin:12px auto;background:rgba(255,255,255,0.14);backdrop-filter:blur(6px);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+    h1{margin:0 0 6px;font-size:22px}
+    p.lead{margin:0 0 14px;color:#234}
+    .controls{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:linear-gradient(180deg,#fff,#e6f0ff);color:var(--accent);text-decoration:none;border:1px solid rgba(255,255,255,0.8)}
+
+    .videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+    .video-card{background:rgba(255,255,255,0.12);backdrop-filter:blur(6px);border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.5);display:flex;gap:8px;align-items:flex-start}
+    .thumb{width:120px;height:68px;background:#ddeefc;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#057;flex:0 0 120px}
+    .meta{flex:1}
+    .title{font-weight:700;color:#043a6b;margin-bottom:6px}
+    .meta a{color:#0b57d0;text-decoration:none}
+    .meta a:hover{text-decoration:underline}
+    .year{font-size:12px;color:#5d6b7a}
+
+    @media (max-width:520px){.thumb{display:none}.video-card{padding:10px}}
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Videoss</h1>
+    <p class="lead">A curated set of early-2010s videos. Click any card to open a YouTube search for that title (fast and reliable without embedding 100 iframes).</p>
+
+    <div class="controls">
+      <a class="btn" href="../search.html">◀ Back to Search</a>
+      <div style="flex:1"></div>
+      <a class="btn" id="shuffleBtn" href="#">🔀 Shuffle</a>
+    </div>
+
+    <div id="videos" class="videos-grid"></div>
+  </div>
+
+  <script>
+    // List of 100 early-2010s video titles (will open YouTube search for each)
+    const videos = [
+      "Double Rainbow 2010",
+      "Justin Bieber Baby 2010",
+      "Rebecca Black Friday 2011",
+      "Nyan Cat 2011",
+      "PSY Gangnam Style 2012",
+      "Carly Rae Jepsen Call Me Maybe 2011",
+      "Gotye Somebody That I Used To Know 2011",
+      "Adele Rolling in the Deep 2010",
+      "Adele Someone Like You 2011",
+      "LMFAO Party Rock Anthem 2011",
+      "Rihanna We Found Love 2011",
+      "Foster The People Pumped Up Kicks 2011",
+      "Skrillex Scary Monsters and Nice Sprites 2010",
+      "Bruno Mars The Lazy Song 2011",
+      "Katy Perry Firework 2010",
+      "Katy Perry Teenage Dream 2010",
+      "Bruno Mars Just The Way You Are 2010",
+      "Bruno Mars Grenade 2010",
+      "Eminem Love The Way You Lie 2010",
+      "Lady Gaga Born This Way 2011",
+      "One Direction What Makes You Beautiful 2011",
+      "PSY Gentleman 2013",
+      "Miley Cyrus Wrecking Ball 2013",
+      "Robin Thicke Blurred Lines 2013",
+      "Imagine Dragons It's Time 2012",
+      "Macklemore Thrift Shop 2012",
+      "Baauer Harlem Shake 2013",
+      "fun We Are Young 2011",
+      "Katy Perry ET 2011",
+      "Maroon 5 Moves Like Jagger 2011",
+      "Taylor Swift We Are Never Ever Getting Back Together 2012",
+      "Lorde Royals 2013",
+      "OK Go This Too Shall Pass 2010",
+      "Rebecca Black My Moment 2011",
+      "Bed Intruder Song 2010",
+      "Skrillex First Of The Year Equinox 2010",
+      "OK Go White Knuckles 2010",
+      "Eminem Not Afraid 2010",
+      "Shakira Waka Waka 2010",
+      "Enrique Iglesias I Like It 2010",
+      "Taio Cruz Dynamite 2010",
+      "Usher OMG 2010",
+      "Kesha Tik Tok 2010",
+      "Flo Rida Good Feeling 2011",
+      "Adele Set Fire To The Rain 2011",
+      "The Black Eyed Peas The Time Dirty Bit 2010",
+      "Coldplay Paradise 2011",
+      "Adele Rumour Has It 2011",
+      "Nicki Minaj Super Bass 2011",
+      "Rihanna Diamonds 2012",
+      "The Script Hall Of Fame 2012",
+      "Glee Valerie 2010",
+      "Jason Derulo Whatcha Say 2009 2010 era",
+      "Chris Brown Look At Me Now 2011",
+      "LMFAO Sexy And I Know It 2011",
+      "Bruno Mars The Other Side 2013",
+      "Kelly Clarkson Stronger 2011",
+      "Pitbull Give Me Everything 2011",
+      "David Guetta Titanium 2011",
+      "Akon Lonely 2010 era",
+      "Pitbull Bon, Bon 2010",
+      "OneRepublic Good Life 2010",
+      "Adele Hometown Glory live 2011",
+      "Imagine Dragons Radioactive 2012",
+      "Drake Headlines 2011",
+      "Sia Clap Your Hands 2010",
+      "Mumford & Sons Little Lion Man 2010",
+      "Arcade Fire The Suburbs 2010",
+      "Kings Of Leon Radioactive 2010",
+      "Ellie Goulding Lights 2010",
+      "Beach House Zebra 2010",
+      "Yeah Yeah Yeahs Sacrilege 2013",
+      "Gotye Easy Way Out live 2011",
+      "Two Door Cinema Club Undercover Martyn 2010",
+      "The Lumineers Ho Hey 2012",
+      "Of Monsters And Men Little Talks 2011",
+      "MGMT Congratulations 2010",
+      "The Black Keys Tighten Up 2010",
+      "Portugal The Man Got It All 2011",
+      "Passion Pit Sleepyhead 2010",
+      "Friendly Fires Paris 2011",
+      "Modest Mouse Lampshades On Fire 2014 (early 2010s feel)",
+      "The XX Islands 2010",
+      "Ke$ha Your Love Is My Drug 2010",
+      "Drake Take Care 2011",
+      "Frank Ocean Novacane 2011",
+      "The Weeknd Wicked Games 2011",
+      "Eminem Love The Way You Lie Part II 2010",
+      "Adele Make You Feel My Love live 2011",
+      "M.I.A. Paper Planes 2010 era",
+      "Bon Iver Holocene live 2011",
+      "Vance Joy Riptide 2013",
+      "Passenger Let Her Go 2012",
+      "Birdy Skinny Love 2011",
+      "Gotye I Feel Better 2011",
+      "Kendrick Lamar Swimming Pools 2012",
+      "The Lonely Island I'm On A Boat 2010 era",
+      "Gnarls Barkley Crazy (earlier but still popular)"
+    ];
+
+    const container = document.getElementById('videos');
+
+    function render(list){
+      container.innerHTML = '';
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+        thumb.textContent = '▶';
+
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+
+        const title = document.createElement('div');
+        title.className = 'title';
+
+        const link = document.createElement('a');
+        // Use YouTube search link to avoid embedding and to get the canonical video quickly
+        link.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(item);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = item;
+
+        title.appendChild(link);
+
+        const y = document.createElement('div');
+        y.className = 'year';
+        // extract year if present at end
+        const m = item.match(/(19|20)\d{2}/);
+        y.textContent = m ? ('Year: ' + m[0]) : '';
+
+        meta.appendChild(title);
+        meta.appendChild(y);
+
+        card.appendChild(thumb);
+        card.appendChild(meta);
+
+        container.appendChild(card);
+      });
+    }
+
+    // Shuffle support
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+    }
+
+    // Initial render (take first 100 if array longer)
+    const initial = videos.slice(0,100);
+    render(initial);
+
+    document.getElementById('shuffleBtn').addEventListener('click', function(e){
+      e.preventDefault();
+      shuffle(initial);
+      render(initial);
+    });
+  </script>
+</body>
+</html>
