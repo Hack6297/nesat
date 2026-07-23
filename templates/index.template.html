@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NESAT 2000 Search</title>
+  <link rel="stylesheet" href="https://unpkg.com/98.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/app.js"></script>
+</head>
+
+<body>
+  <main class="page-shell home-shell">
+    <div class="window nav-window">
+      <div class="title-bar">
+        <div class="title-bar-text">NESAT 2000 Search</div>
+        <div class="title-bar-controls">
+          <button aria-label="Help"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body nav-body">
+        <div class="nav-brand">
+          <img src="/imageres/logo.png" alt="" class="brand-icon">
+          <div>
+            <strong>NESAT 2000</strong>
+            <p>internet search engine</p>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a class="nav-link active" href="/index.html">Home</a>
+          <a class="nav-link" href="/results.html">Results</a>
+        </nav>
+      </div>
+    </div>
+
+    <div id="live-status">{{MESSAGE_PANEL}}</div>
+
+    <section class="window home-window">
+      <div class="window-body home-body">
+        <div class="hero-logo-row">
+          <img src="/imageres/logo_title.png" alt="NESAT 2000" class="hero-wordmark-icon">
+        </div>
+        <p class="hero-tagline">internet search across your own mixed web index</p>
+
+        <form method="get" action="/results" class="google-search-form">
+          <div class="search-row">
+            <img src="/imageres/find.png" alt="" class="search-row-icon">
+            <input type="text" name="q" aria-label="Search NesaT" autocomplete="off" autofocus>
+          </div>
+          <div class="search-buttons">
+            <button type="submit">Find:</button>
+            <a href="/index.html" class="clear-button">Clear:</a>
+          </div>
+        </form>
+
+        <div class="stats-strip">
+          <span><strong data-stat="pages">{{INDEXED_PAGES}} pages</strong></span>
+          <span><strong data-stat="terms">{{TRACKED_TERMS}} terms</strong></span>
+          <span><strong data-stat="crawl">{{LAST_CRAWL}}</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="window tools-window">
+      <div class="title-bar">
+        <div class="title-bar-text">Internet Index</div>
+      </div>
+      <div class="window-body">
+        <p class="small-note">NESAT 2000 automatically crawls a mixed internet index.</p>
+        <div class="source-breakdown">
+          {{SOURCE_BREAKDOWN}}
+        </div>
+        <div class="search-buttons small-buttons" style="margin-top: 10px;">
+          <form method="get" action="/index.html">
+            <input type="hidden" name="refresh_index" value="1">
+            <button type="submit">Rebuild Internet Index</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- news window -->
+    <section class="window news-window">
+      <div class="title-bar">
+        <div class="title-bar-text">NESAT News / BBC Top Stories</div>
+      </div>
+      <div id="bbc-news-feed" class="window-body news-body">
+        {{BBC_NEWS}}
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

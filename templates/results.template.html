@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="stylesheet" href="https://unpkg.com/98.css">
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <main class="page-shell results-shell">
+    <div class="window nav-window">
+      <div class="title-bar">
+        <div class="title-bar-text">NESAT 2000 Search</div>
+        <div class="title-bar-controls">
+          <button aria-label="Help"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body nav-body">
+        <div class="nav-brand">
+          <img src="/imageres/world.png" alt="" class="brand-icon">
+          <div>
+            <strong>NESAT 2000</strong>
+            <p>internet search engine</p>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a class="nav-link" href="/index.html">Home</a>
+          <a class="nav-link active" href="/results.html">Results</a>
+        </nav>
+      </div>
+    </div>
+    
+    <div id="live-status">{{MESSAGE_PANEL}}</div>
+
+    <section class="window results-top-window">
+      <div class="window-body results-top-body">
+        <div class="results-logo">
+          <img src="/imageres/find_all_results.png" alt="" class="hero-logo-icon small-logo-icon">
+          <a href="/index.html" class="results-brand">NESAT INTERNET</a>
+        </div>
+
+        <form method="get" action="/results" class="results-search-form">
+          <div class="search-row">
+            <img src="/imageres/find.png" alt="" class="search-row-icon">
+            <input type="text" name="q" value="{{QUERY_VALUE}}" aria-label="Search NesaT" autocomplete="off" id="search-input">
+          </div>
+          {{SORT_HIDDEN}}
+          <div class="search-buttons small-buttons">
+            <button type="submit">Find:</button>
+            <button type="button" id="btn-lucky">I'm Feeling Lucky</button>
+            <a href="/results.html" class="clear-button">Clear:</a>
+          </div>
+        </form>
+
+        <div class="sort-chips-wrap">
+          {{SORT_CHIPS}}
+        </div>
+
+        <p class="query-summary">{{QUERY_SUMMARY}}</p>
+        <p class="query-summary suggestion-line">{{QUERY_SUGGESTION}}</p>
+        <p class="small-note"><strong data-stat="pages">{{INDEXED_PAGES}} pages</strong> indexed / <strong data-stat="terms">{{TRACKED_TERMS}} terms</strong> tracked / <strong data-stat="crawl">latest {{LAST_CRAWL}}</strong></p>
+      </div>
+    </section>
+
+    <section class="window results-list-window">
+      <div class="title-bar">
+        <div class="title-bar-text">Search Results</div>
+      </div>
+      <div class="window-body results-list-body">
+        {{RESULT_CONTENT}}
+        <nav class="pagination-wrap" id="pagination" aria-label="Search result pages">
+          {{PAGINATION}}
+        </nav>
+      </div>
+    </section>
+
+    <section class="window tools-window">
+      <div class="title-bar">
+        <div class="title-bar-text">Internet Index</div>
+      </div>
+      <div class="window-body">
+        <p class="small-note">Need more results? Rebuild the mixed internet index and run the search again to pull from more sources.</p>
+        <div class="source-breakdown">
+          {{SOURCE_BREAKDOWN}}
+        </div>
+        <div class="search-buttons small-buttons" style="margin-top: 10px;">
+          <form method="get" action="/results">
+            <input type="hidden" name="refresh_index" value="1">
+            <input type="hidden" name="q" value="{{QUERY_VALUE}}">
+            <button type="submit">Rebuild Internet Index</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="window news-window">
+      <div class="title-bar">
+        <div class="title-bar-text">NESAT News / BBC Top Stories</div>
+      </div>
+      <div id="bbc-news-feed" class="window-body news-body">
+        {{BBC_NEWS}}
+      </div>
+    </section>
+  </main>
+</body>
+</html>

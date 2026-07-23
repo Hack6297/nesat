@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: nesa98
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /status.json
+    plan: free
