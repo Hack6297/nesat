@@ -52,23 +52,38 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
-function setupLuckyButton() {
-  const luckyBtn = document.getElementById('btn-lucky');
-  const searchInput = document.getElementById('search-input');
-  if (!luckyBtn || !searchInput) return;
+function setupClearButtons() {
+  const clearButtons = document.querySelectorAll('[data-clear-target]');
+  clearButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const targetId = button.getAttribute('data-clear-target');
+      const target = targetId ? document.getElementById(targetId) : null;
+      if (!target) return;
+      target.value = '';
+      target.focus();
+    });
+  });
+}
 
-  luckyBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const query = searchInput.value.trim();
-    if (query) {
-      window.location.href = `search?q=${encodeURIComponent(query)}`;
-    }
+function setupWindowToggles() {
+  const toggleButtons = document.querySelectorAll('[data-window-toggle]');
+  toggleButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      const hostWindow = button.closest('.window');
+      if (!hostWindow) return;
+      const isMinimized = hostWindow.classList.toggle('is-minimized');
+      button.setAttribute('aria-label', isMinimized ? 'Restore' : 'Minimize');
+      button.setAttribute('title', isMinimized ? 'Restore' : 'Minimize');
+    });
   });
 }
 
 window.addEventListener('load', () => {
   refreshStatus();
   refreshNews();
-  setupLuckyButton();
+  setupClearButtons();
+  setupWindowToggles();
   window.setInterval(refreshStatus, 4000);
 });

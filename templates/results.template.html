@@ -10,32 +10,30 @@
 </head>
 <body>
   <main class="page-shell results-shell">
-    <div class="window nav-window">
-      <div class="title-bar">
-        <div class="title-bar-text">NESAT 2000 Search</div>
-        <div class="title-bar-controls">
-          <button aria-label="Help"></button>
-          <button aria-label="Close"></button>
-        </div>
-      </div>
-      <div class="window-body nav-body">
-        <div class="nav-brand">
-          <img src="/imageres/world.png" alt="" class="brand-icon">
-          <div>
-            <strong>NESAT 2000</strong>
-            <p>internet search engine</p>
-          </div>
-        </div>
-        <nav class="nav-links">
-          <a class="nav-link" href="/index.html">Home</a>
-          <a class="nav-link active" href="/results.html">Results</a>
-        </nav>
-      </div>
-    </div>
-    
     <div id="live-status">{{MESSAGE_PANEL}}</div>
 
     <section class="window results-top-window">
+      <div class="title-bar">
+        <div class="title-bar-text">NESAT 2000 Search</div>
+        <div class="title-bar-controls">
+          <button type="button" class="window-toggle-button" aria-label="Minimize" title="Minimize" data-window-toggle></button>
+        </div>
+      </div>
+      <div class="window-toolbar">
+        <div class="nav-body inner-nav-body">
+          <div class="nav-brand">
+            <img src="/imageres/world.png" alt="" class="brand-icon">
+            <div>
+              <strong>NESAT 2000</strong>
+              <p>internet search engine</p>
+            </div>
+          </div>
+          <nav class="nav-links">
+            <a class="nav-link" href="/index.html">Home</a>
+            <a class="nav-link active" href="/results.html">Results</a>
+          </nav>
+        </div>
+      </div>
       <div class="window-body results-top-body">
         <div class="results-logo">
           <img src="/imageres/find_all_results.png" alt="" class="hero-logo-icon small-logo-icon">
@@ -43,16 +41,15 @@
         </div>
 
         <form method="get" action="/results" class="results-search-form">
-          <div class="search-row">
+          <div class="search-row search-controls-row">
             <img src="/imageres/find.png" alt="" class="search-row-icon">
             <input type="text" name="q" value="{{QUERY_VALUE}}" aria-label="Search NesaT" autocomplete="off" id="search-input">
+            <div class="search-inline-buttons">
+              <button type="submit" class="icon-label-button"><img src="/imageres/find.png" alt="">Find</button>
+              <button type="button" class="clear-button-98 icon-label-button" data-clear-target="search-input"><img src="/imageres/clear.png" alt="">Clear</button>
+            </div>
           </div>
           {{SORT_HIDDEN}}
-          <div class="search-buttons small-buttons">
-            <button type="submit">Find:</button>
-            <button type="button" id="btn-lucky">I'm Feeling Lucky</button>
-            <a href="/results.html" class="clear-button">Clear:</a>
-          </div>
         </form>
 
         <div class="sort-chips-wrap">
@@ -68,6 +65,9 @@
     <section class="window results-list-window">
       <div class="title-bar">
         <div class="title-bar-text">Search Results</div>
+        <div class="title-bar-controls">
+          <button type="button" class="window-toggle-button" aria-label="Minimize" title="Minimize" data-window-toggle></button>
+        </div>
       </div>
       <div class="window-body results-list-body">
         {{RESULT_CONTENT}}
@@ -80,6 +80,9 @@
     <section class="window tools-window">
       <div class="title-bar">
         <div class="title-bar-text">Internet Index</div>
+        <div class="title-bar-controls">
+          <button type="button" class="window-toggle-button" aria-label="Minimize" title="Minimize" data-window-toggle></button>
+        </div>
       </div>
       <div class="window-body">
         <p class="small-note">Need more results? Rebuild the mixed internet index and run the search again to pull from more sources.</p>
@@ -99,6 +102,9 @@
     <section class="window news-window">
       <div class="title-bar">
         <div class="title-bar-text">NESAT News / BBC Top Stories</div>
+        <div class="title-bar-controls">
+          <button type="button" class="window-toggle-button" aria-label="Minimize" title="Minimize" data-window-toggle></button>
+        </div>
       </div>
       <div id="bbc-news-feed" class="window-body news-body">
         {{BBC_NEWS}}
