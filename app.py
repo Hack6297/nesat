@@ -8,7 +8,6 @@ import threading
 import time
 import webbrowser
 import xml.etree.ElementTree as element_tree
-import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from html import escape, unescape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -20,29 +19,14 @@ from search_engine import DocumentParser, SearchEngine, SearchResult
 
 
 ROOT = Path(__file__).resolve().parent
-CODE_VERSION = "2026-06-27-social-search-2-youtube"
+CODE_VERSION = "2026-06-27-beta2-ui-images"
 TEMPLATE_DIR = ROOT / "templates"
 STATIC_DIR = ROOT / "static"
 IMAGE_DIR = ROOT / "imageres"
 DB_PATH = ROOT / "data" / "index.db"
-DB_ARCHIVE_PATH = ROOT / "data" / "index.db.zip"
-DB_ARCHIVE_PARTS = tuple(sorted(DB_ARCHIVE_PATH.parent.glob("index.db.zip.part*")))
 IS_RENDER = os.environ.get("RENDER", "").lower() == "true"
 DEFAULT_HOST = os.environ.get("HOST") or ("0.0.0.0" if IS_RENDER or os.environ.get("PORT") else "127.0.0.1")
 DEFAULT_PORT = int(os.environ.get("PORT") or os.environ.get("NESAT_PORT") or "8020")
-
-if not DB_ARCHIVE_PATH.exists() and DB_ARCHIVE_PARTS:
-    with DB_ARCHIVE_PATH.open("wb") as archive:
-        for part_path in DB_ARCHIVE_PARTS:
-            with part_path.open("rb") as part:
-                while chunk := part.read(1024 * 1024):
-                    archive.write(chunk)
-
-if not DB_PATH.exists() and DB_ARCHIVE_PATH.exists():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with zipfile.ZipFile(DB_ARCHIVE_PATH) as archive:
-        archive.extract("index.db", DB_PATH.parent)
-
 ENGINE = SearchEngine(DB_PATH)
 DEFAULT_SOURCE_PROFILES = [
     {
@@ -886,6 +870,71 @@ def _fetch_youtube_search_results(query: str, limit: int = 3) -> list[SearchResu
     return results
 
 
+def _extract_youtube_video_id(url: str) -> str:
+    parsed = urlparse(url)
+    host = (parsed.netloc or "").lower()
+    if "youtu.be" in host:
+        return parsed.path.strip("/").split("/")[0]
+    if "youtube.com" in host:
+        params = parse_qs(parsed.query)
+        return (params.get("v") or [""])[0]
+    return ""
+
+
+def _github_og_image(url: str) -> str:
+    parsed = urlparse(url)
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) >= 2:
+        owner, repo = parts[0], parts[1]
+        return f"https://opengraph.githubassets.com/1/{quote(owner)}/{quote(repo)}"
+    return ""
+
+
+def _result_thumbnail_url(result: SearchResult) -> str:
+    parsed = urlparse(result.url)
+    host = (parsed.netloc or "").lower()
+    path = parsed.path.lower()
+
+    if path.endswith((".png", ".jpg", ".jpeg", ".gif", ".webp")):
+        return result.url
+
+    youtube_id = _extract_youtube_video_id(result.url)
+    if youtube_id:
+        return f"https://i.ytimg.com/vi/{quote(youtube_id)}/hqdefault.jpg"
+
+    if "github.com" in host:
+        return _github_og_image(result.url)
+
+    if "reddit.com" in host:
+        return "https://www.redditstatic.com/shreddit/assets/favicon/192x192.png"
+
+    if "wikipedia.org" in host:
+        return "https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"
+
+    if "deviantart.com" in host:
+        return "https://st.deviantart.net/minish/main/logo-c0c0c0.svg"
+
+    if "archive.org" in host:
+        return "https://archive.org/images/glogo.jpg"
+
+    if "apple.com" in host:
+        return "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png?202110180743"
+
+    return ""
+
+
+def _result_thumbnail_markup(result: SearchResult, css_class: str, fallback_class: str) -> str:
+    image_url = _result_thumbnail_url(result)
+    if image_url:
+        return (
+            f'<img src="{escape(image_url)}" alt="" class="{css_class}" loading="lazy" '
+            "onerror=\"this.style.display='none'; this.nextElementSibling.hidden=false\">"
+            f'<div class="{fallback_class}" hidden><span>{escape(urlparse(result.url).netloc or result.title)}</span></div>'
+        )
+    label = urlparse(result.url).netloc or result.title
+    return f'<div class="{fallback_class}"><span>{escape(label)}</span></div>'
+
+
 def _community_search_fallbacks(query: str) -> list[SearchResult]:
     return [
         _make_web_result(
@@ -1460,19 +1509,49 @@ def highlight_query_text(text: str, query: str) -> str:
 # ── Google-style result card ─────────────────────────────────────
 def render_result_card(result, query: str) -> str:
     host = urlparse(result.url).netloc or result.url
-    breadcrumb = build_breadcrumb(result.url)
-    favicon_url = f"https://www.google.com/s2/favicons?domain={escape(host)}&sz=32"
+    favicon_url = f"https://{escape(host)}/favicon.ico"
     title_html = highlight_query_text(result.title, query)
     snippet_html = highlight_query_text(result.snippet, query)
     stars_html = render_stars(result.star_rating)
+    thumbnail_html = _result_thumbnail_markup(
+        result,
+        "result-thumb",
+        "result-thumb-fallback",
+    )
 
     return f"""
     <div class="result-item" id="result-{abs(hash(result.url)) % 100000}">
-      <h2 class="g-title"><img class="g-favicon" src="{favicon_url}" alt="" loading="lazy" onerror="this.style.display='none'"><a href="{escape(result.url)}" target="_blank" rel="noreferrer">{title_html}</a></h2>
-      <p class="result-link">{escape(result.url)}</p>
-      <p class="result-snippet">{snippet_html}</p>
-      {stars_html}
+      <div class="result-main">
+        <div class="result-copy">
+          <h2 class="g-title"><img class="g-favicon" src="{favicon_url}" alt="" loading="lazy" onerror="this.style.display='none'"><a href="{escape(result.url)}" target="_blank" rel="noreferrer">{title_html}</a></h2>
+          <p class="result-link">{escape(result.url)}</p>
+          <p class="result-snippet">{snippet_html}</p>
+          {stars_html}
+        </div>
+        <div class="result-thumb-wrap">
+          {thumbnail_html}
+        </div>
+      </div>
     </div>
+    """
+
+
+def render_image_result_card(result: SearchResult) -> str:
+    thumbnail_html = _result_thumbnail_markup(
+        result,
+        "image-result-thumb",
+        "image-result-fallback",
+    )
+    return f"""
+    <a href="{escape(result.url)}" target="_blank" rel="noreferrer" class="image-result-link">
+      <article class="window image-result-card">
+        <div class="window-body">
+          {thumbnail_html}
+          <p class="image-result-title">{escape(result.title)}</p>
+          <p class="result-link">{escape(result.url)}</p>
+        </div>
+      </article>
+    </a>
     """
 
 
@@ -1973,12 +2052,10 @@ def render_results_page(
         result_content = '<section class="empty-state"><h2>Query too short</h2><p>Use at least 3 letters so Nesat can find relevant results.</p></section>'
     elif query.strip():
         if sort_mode == "images":
-            result_content = '<div class="images-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:15px; margin-top:20px;">'
-            for i, r in enumerate(results):
-                seed = abs(hash(r.url)) % 100000
-                img_url = f"https://picsum.photos/seed/{seed}/200/200"
-                result_content += f'<a href="{escape(r.url)}" target="_blank" style="text-decoration:none;"><article class="window" style="padding:4px;"><div class="window-body" style="margin:0;"><img src="{img_url}" alt="" style="width:100%; height:auto; display:block;"><p class="result-link" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:4px;">{escape(r.url)}</p></div></article></a>'
-            result_content += '</div>'
+            result_content = '<div class="images-grid">'
+            for r in results:
+                result_content += render_image_result_card(r)
+            result_content += "</div>"
         else:
             result_content = render_result_cards(query, results)
     else:
@@ -2039,16 +2116,6 @@ class SearchHandler(BaseHTTPRequestHandler):
         # "I'm Feeling Lucky" — redirect to first result
         if parsed.path == "/search":
             query = params.get("q", [""])[0].strip()
-            if query:
-                results, _ = search_web_and_index(
-                    query, page=1, per_page=1, sort_mode="relevant"
-                )
-                if results:
-                    self.send_response(302)
-                    self.send_header("Location", results[0].url)
-                    self.end_headers()
-                    return
-            # Fallback to results page
             self.send_response(302)
             self.send_header("Location", f"/results.html?{urlencode({'q': query})}")
             self.end_headers()
